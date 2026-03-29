@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Family Minimalist Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="background-slideshow"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Ultra-Thin & Minimalist -->
+        <aside class="sidebar minimalist-sidebar">
+            <h1 class="clock-display" id="clock-digital">00:00</h1>
+            <h2 class="date-display" id="date-display">Carregando...</h2>
+            
+            <div id="mini-weather" class="weather-mini">
+                <span id="weather-icon"></span> <span id="temperature" style="margin-left:5px;"></span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-target="view-calendar"><span class="icon">📅</span> <span class="lbl">Calendário</span></button>
+                <button class="nav-btn" data-target="view-tasks"><span class="icon">✅</span> <span class="lbl">Tarefas</span></button>
+                <button class="nav-btn" data-target="view-meals"><span class="icon">🍽️</span> <span class="lbl">Refeições</span></button>
+                <button class="nav-btn" data-target="view-photos"><span class="icon">🖼️</span> <span class="lbl">Fotos</span></button>
+                <button class="nav-btn" data-target="view-lists"><span class="icon">📋</span> <span class="lbl">Listas</span></button>
+                <button class="nav-btn" data-target="view-settings"><span class="icon">⚙️</span> <span class="lbl">Definições</span></button>
+                <a class="nav-btn" href="admin.html" style="text-decoration:none; margin-top: 20px; opacity: 0.3; transition: 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.3'">
+                    <span class="icon">🔐</span> <span class="lbl">Painel Admin</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content (Pure Glassmorphism) -->
+        <main class="main-content">
+            
+            <!-- VIEW 1: Calendário (Ultra-Clean) -->
+            <section id="view-calendar" class="spa-view active">
+                <header class="view-header">
+                    <h2 class="view-title">Semana Familiar</h2>
+                    <div class="week-controls">
+                        <button id="prev-week" class="minimal-btn">◀</button>
+                        <span id="week-label" class="minimal-lbl">Esta Semana</span>
+                        <button id="next-week" class="minimal-btn">▶</button>
+                    </div>
+                </header>
+                
+                <div class="grid-container">
+                    <div class="grid-header">
+                        <div class="col-head empty-corner"></div>
+                        <div class="col-head member-head joao">João</div>
+                        <div class="col-head member-head paula">Paula</div>
+                        <div class="col-head member-head alice">Alice</div>
+                        <div class="col-head member-head noel">🐶 Noel</div>
+                    </div>
+                    
+                    <div class="grid-body" id="calendar-grid">
+                        <!-- JS Dynamic Render -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: Refeições -->
+            <section id="view-meals" class="spa-view">
+                <header class="view-header"><h2 class="view-title">Refeições</h2></header>
+                <div class="grid-container">
+                   <ul id="meals-list" class="clean-list"></ul>
+                </div>
+            </section>
+
+            <!-- VIEW 3: Listas Dinâmicas Touch -->
+            <section id="view-lists" class="spa-view">
+                <header class="view-header"><h2 class="view-title">Lista de Compras</h2></header>
+                <div class="grid-container">
+                    <ul id="shopping-list" class="clean-list interactive-list"></ul>
+                </div>
+            </section>
+
+            <!-- VIEW 4: Tarefas Dinâmicas -->
+            <section id="view-tasks" class="spa-view">
+                <header class="view-header"><h2 class="view-title">Tarefas Pendentes</h2></header>
+                <div class="grid-container">
+                    <ul id="tasks-list" class="clean-list interactive-list"></ul>
+                </div>
+            </section>
+            <section id="view-photos" class="spa-view"><header class="view-header"><h2 class="view-title">Galeria</h2></header><div style="opacity: 0.3; font-weight:300;">Álbum inativo.</div></section>
+            <section id="view-settings" class="spa-view"><header class="view-header"><h2 class="view-title">Sistema</h2></header><div style="opacity: 0.3; font-weight:300;">V. 4.0 - Ultra Clean Mode</div></section>
+        </main>
+    </div>
+
+    <!-- Drivers Ocultos -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/db.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
