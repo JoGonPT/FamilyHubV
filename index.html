@@ -11,30 +11,27 @@
     <div id="background-slideshow"></div>
 
     <div class="app-container">
-        <!-- Sidebar Ultra-Thin & Minimalist -->
-        <aside class="sidebar minimalist-sidebar">
+        <!-- Top Header Vertical -->
+        <header class="top-info-header" style="text-align: center; padding: 40px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);">
             <h1 class="clock-display" id="clock-digital">00:00</h1>
             <h2 class="date-display" id="date-display">Carregando...</h2>
-            
-            <div id="mini-weather" class="weather-mini">
+            <div id="mini-weather" class="weather-mini" style="margin-top: 10px;">
                 <span id="weather-icon"></span> <span id="temperature" style="margin-left:5px;"></span>
             </div>
+        </header>
 
-            <nav class="sidebar-nav">
-                <button class="nav-btn active" data-target="view-calendar"><span class="icon">📅</span> <span class="lbl">Calendário</span></button>
-                <button class="nav-btn" data-target="view-tasks"><span class="icon">✅</span> <span class="lbl">Tarefas</span></button>
-                <button class="nav-btn" data-target="view-meals"><span class="icon">🍽️</span> <span class="lbl">Refeições</span></button>
-                <button class="nav-btn" data-target="view-photos"><span class="icon">🖼️</span> <span class="lbl">Fotos</span></button>
-                <button class="nav-btn" data-target="view-lists"><span class="icon">📋</span> <span class="lbl">Listas</span></button>
-                <button class="nav-btn" data-target="view-settings"><span class="icon">⚙️</span> <span class="lbl">Definições</span></button>
-                <a class="nav-btn" href="admin.html" style="text-decoration:none; margin-top: 20px; opacity: 0.3; transition: 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.3'">
-                    <span class="icon">🔐</span> <span class="lbl">Painel Admin</span>
-                </a>
-            </nav>
-        </aside>
+        <!-- Bottom Tab Bar (App Style) -->
+        <nav class="bottom-tab-bar">
+            <button class="nav-btn active" data-target="view-calendar" title="Calendário"><span class="icon">📅</span></button>
+            <button class="nav-btn" data-target="view-tasks" title="Tarefas"><span class="icon">✅</span></button>
+            <button class="nav-btn" data-target="view-meals" title="Refeições"><span class="icon">🍽️</span></button>
+            <button class="nav-btn" data-target="view-lists" title="Listas"><span class="icon">📋</span></button>
+            <button class="nav-btn" data-target="view-settings" title="Definições"><span class="icon">⚙️</span></button>
+            <a class="nav-btn" href="admin.html" style="text-decoration:none;" title="Painel Admin"><span class="icon" style="opacity:0.3;">🔐</span></a>
+        </nav>
 
-        <!-- Main Content (Pure Glassmorphism) -->
-        <main class="main-content">
+        <!-- Main Content (Vertical Mode) -->
+        <main class="main-content vertical-main">
             
             <!-- VIEW 1: Calendário (Ultra-Clean) -->
             <section id="view-calendar" class="spa-view active">

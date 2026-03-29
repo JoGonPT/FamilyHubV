@@ -2,70 +2,55 @@
     --color-joao: #4facfe;
     --color-paula: #ff85a1;
     --color-alice: #38ef7d;
-    --color-noel: #ffb74d; /* Soft Orange para Cão */
+    --color-noel: #ffb74d; 
     --text-primary: #ffffff;
     --text-secondary: rgba(255,255,255,0.45);
 }
 
-/* Base Restarts */
 * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
 
 body {
     font-family: 'Inter', sans-serif; font-weight: 300;
     color: var(--text-primary);
     overflow: hidden; 
-    background: #1c1c1e; /* Cinza Neutro Escuro Elegante (Modo Apple) */
+    background: #1c1c1e;
     transition: background-color 2s ease;
 }
+#background-slideshow { display: none; }
+body.night-mode { background: #000000; }
 
-/* Background Sólido Base */
-#background-slideshow {
-    display: none; /* Imagens Inativas - Foco Absoluto na Leitura */
+.app-container { 
+    display: flex; height: 100vh; padding: 0; 
+    flex-direction: column; /* VERTICAL MESTRE */
 }
 
-/* Auto Modo Noite (23h-07h) - Menos luminosidade no Quarto/Sala */
-body.night-mode {
-    background: #000000; /* Preto Puro à noite. Super confortável na TV e poupa OLEDs. */
-}
-
-.app-container { display: flex; height: 100vh; padding: 0; }
-
-/* 1. SIDEBAR ULTRA-THIN & MINIMALISTA */
-.minimalist-sidebar {
-    width: 220px; padding: 40px 20px;
-    background: rgba(0, 0, 0, 0.35); /* Sem Fundo Solido */
-    backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-    display: flex; flex-direction: column; gap: 40px;
-    border-right: 1px solid rgba(255,255,255,0.05); /* Separação quase inivsivel */
-}
-
-.clock-display { font-size: 3.5rem; font-weight: 300; letter-spacing: -2px; margin-bottom: 5px; text-align: center; }
-.date-display { font-size: 1rem; font-weight: 400; color: var(--text-secondary); text-align: center; text-transform: capitalize; }
-.weather-mini { margin-top: -20px; text-align: center; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; opacity: 0.8; gap:5px; font-weight:500;}
+/* 1. TOPO DA APLICAÇÃO (Relógio + Clima) */
+.clock-display { font-size: 3.5rem; font-weight: 300; letter-spacing: -2px; margin-bottom: 5px; }
+.date-display { font-size: 1rem; font-weight: 400; color: var(--text-secondary); text-transform: capitalize; }
+.weather-mini { font-size: 1.2rem; display: flex; align-items: center; justify-content: center; opacity: 0.8; font-weight:500;}
 .weather-mini img { width: 35px; }
 
-.sidebar-nav { display: flex; flex-direction: column; gap: 10px; }
+/* 2. BARRA DE NAVEGAÇÃO EM BAIXO (Tab Bar) */
+.bottom-tab-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 85px;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    display: flex; justify-content: space-around; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.05); z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+}
 .nav-btn {
-    display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 15px;
-    background: transparent; border: none; padding: 15px 20px; border-radius: 12px;
-    color: var(--text-secondary); font-family: 'Inter'; font-size: 1.1rem; font-weight: 400;
-    cursor: pointer; transition: 0.3s;
+    background: transparent; border: none; padding: 15px; 
+    color: var(--text-secondary); cursor: pointer; transition: 0.3s;
 }
-.nav-btn .icon { font-size: 1.4rem; opacity: 0.5; transition: 0.3s; width: 30px; text-align:center;}
-.nav-btn.active { color: var(--text-primary); background: rgba(255,255,255,0.05); font-weight:500;}
-.nav-btn.active .icon { opacity: 1; }
+.nav-btn .icon { font-size: 1.8rem; opacity: 0.4; transition: 0.3s; }
+.nav-btn.active .icon { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
 
-/* 2. MAIN CONTENT (Pure UI) */
-.main-content {
-    flex: 1; padding: 50px 60px; position: relative;
-    background: transparent; 
+/* 3. CONTEÚDO PRINCIPAL */
+.main-content.vertical-main {
+    flex: 1; padding: 25px 20px 100px 20px; /* Padding bottom pra esquivar da bottom bar */
+    overflow-y: auto; background: transparent; 
 }
-
-/* Transições Suaves das Abas */
-.spa-view {
-    display: none; height: 100%; flex-direction: column;
-    animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
+.spa-view { display: none; flex-direction: column; animation: fadeIn 0.5s ease forwards; }
 .spa-view.active { display: flex; }
 
 @keyframes fadeIn {
@@ -73,147 +58,49 @@ body.night-mode {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.view-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
-.view-title { font-size: 3rem; font-weight: 300; letter-spacing: -1px; }
+.view-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+.view-title { font-size: 2.2rem; font-weight: 300; letter-spacing: -1px; }
 
-.week-controls { display: flex; align-items: center; gap: 20px; }
-.minimal-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display:flex; align-items:center; justify-content:center; }
-.minimal-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.9); }
-.minimal-lbl { font-size: 1.2rem; font-weight: 400; color: var(--text-secondary); }
+.week-controls { display: flex; align-items: center; gap: 20px; justify-content:center;}
+.minimal-btn { background: rgba(255,255,255,0.05); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display:flex; align-items:center; justify-content:center; }
+.minimal-lbl { font-size: 1.1rem; font-weight: 400; color: var(--text-secondary); }
 
+/* 4. GRELHA DE CALENDÁRIO (Modo Vertical Compacto) */
+.grid-container { flex: 1; display: flex; flex-direction: column; gap: 15px;}
+.grid-header { display: none; } /* Nomes escondidos e colocados diretamente na row no modo vertical se quiseres/ou no scroll */
 
-/* 3. GRELHA MINIMALISTA (Calendário) */
-.grid-container { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.grid-header { display: grid; grid-template-columns: 80px 1fr 1fr 1fr 1fr; gap: 30px; margin-bottom: 25px; padding-right: 10px;}
-.col-head { text-align: left; font-weight: 400; font-size: 1.2rem; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;}
+.grid-body { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.grid-row { 
+    display: flex; flex-direction: column; gap: 10px; 
+    border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 20px;
+}
 
-.grid-body { flex: 1; display: grid; grid-template-rows: repeat(7, 1fr); gap: 25px; overflow-y: auto; padding-right: 10px; }
-.grid-body::-webkit-scrollbar { width: 4px; }
-.grid-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.day-label { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; border-left: 2px solid var(--text-secondary); padding-left: 10px; }
+.day-name { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; color: var(--text-primary); letter-spacing: 1px;}
+.day-number { font-size: 1.2rem; font-weight: 300; color: var(--text-secondary); }
 
-.grid-row { display: grid; grid-template-columns: 80px 1fr 1fr 1fr 1fr; gap: 30px; min-height: 70px; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 10px;}
+/* Cartões Verticalizadas com scroll X se houver mts eventos */
+.grid-cell { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px;}
 
-.day-label { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
-.day-name { font-size: 0.85rem; font-weight: 500; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px;}
-.day-number { font-size: 1.6rem; font-weight: 300; }
-
-.grid-cell { display: flex; flex-direction: column; gap: 10px; padding: 5px 0; }
-
-/* 4. CARTÕES ULTRA-CLEAN (Sem bordas pesadas/invisiveis) */
 .event-card {
-    background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, transparent 100%);
-    border: none;
-    border-left: 3px solid; /* Apenas linha lateral fina da cor de acento */
-    padding: 10px 15px; 
-    border-radius: 0 10px 10px 0; /* Bordas Suaves */
-    min-height: auto;
-    cursor: pointer; transition: 0.2s;
+    background: rgba(255,255,255,0.03); border: none; border-top: 3px solid; 
+    padding: 15px 12px; border-radius: 6px; 
+    display: flex; flex-direction: column; justify-content: space-between;
 }
-.event-card:hover { background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%); transform: translateX(5px); }
-.event-card span { display: block; }
-.event-card .ev-title { font-weight: 400; font-size: 1.1rem; color: var(--text-primary); }
-.event-card .ev-desc { font-weight: 300; font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; }
+.event-card .ev-title { font-weight: 500; font-size: 1rem; color: var(--text-primary); }
+.event-card .ev-desc { font-weight: 300; font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px; }
 
-/* Cores de Acento */
-.card-joao { border-left-color: var(--color-joao); }
-.card-paula { border-left-color: var(--color-paula); }
-.card-alice { border-left-color: var(--color-alice); }
-.card-noel { border-left-color: var(--color-noel); } /* O Noel é laranja agora */
+.card-joao { border-top-color: var(--color-joao); }
+.card-paula { border-top-color: var(--color-paula); }
+.card-alice { border-top-color: var(--color-alice); }
+.card-noel { border-top-color: var(--color-noel); } 
 
-/* 5. GESTÃO DE LISTAS/REFEIÇOES (UI Limpa) */
-.clean-list { list-style: none; display: flex; flex-direction: column; gap: 15px; }
+/* 5. GESTÃO DE LISTAS/REFEIÇOES */
+.clean-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
 .clean-list li {
-    font-size: 1.4rem; font-weight: 300; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-    display: flex; align-items: center; justify-content: space-between;
+    font-size: 1.1rem; font-weight: 300; padding: 18px; border-radius: 10px;
+    background: rgba(255,255,255,0.02); display: flex; flex-direction: column;
 }
-.interactive-list li { cursor: pointer; transition: 0.3s; padding: 10px 20px;}
-.interactive-list li:hover { padding-left: 30px; background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%); border-radius:10px; }
+.interactive-list li { cursor: pointer; transition: 0.3s; flex-direction: row; align-items: center; justify-content: space-between;}
+.interactive-list li:active { background: rgba(255,255,255,0.08); transform: scale(0.98); }
 .interactive-list li.striked { text-decoration: line-through; opacity: 0.2; }
-
-/* ========================================================= */
-/* 6. RESPONSIVIDADE (Tablets, Portáteis, Ecrãs Menores)     */
-/* ========================================================= */
-
-@media (max-width: 1200px) {
-    .main-content { padding: 40px; }
-    .grid-header, .grid-row { gap: 15px; grid-template-columns: 60px 1fr 1fr 1fr 1fr; }
-    .view-title { font-size: 2.3rem; }
-    .col-head { font-size: 1rem; }
-}
-
-@media (max-width: 900px) {
-    .app-container { flex-direction: column; }
-    
-    /* Sidebar Superior (Horizontal) */
-    .minimalist-sidebar {
-        width: 100%; height: auto; padding: 20px;
-        flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center;
-        border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 15px;
-    }
-    
-    .clock-display { font-size: 2.5rem; margin-bottom: 0; }
-    .date-display { font-size: 0.9rem; }
-    .weather-mini { margin-top: 0; }
-    
-    .sidebar-nav { flex-direction: row; width: 100%; justify-content: flex-start; overflow-x: auto; gap: 10px; padding-bottom: 5px; }
-    .nav-btn { flex-direction: row; padding: 10px 15px; font-size: 0.95rem; white-space: nowrap; }
-    .nav-btn .icon { font-size: 1.1rem; }
-    
-    /* Scroll Horizontal Nativo para a Grelha do Calendário */
-    .grid-container { overflow-x: auto; }
-    .grid-header, .grid-row { min-width: 700px; /* Garante que os cartões não esmagam */ }
-}
-
-@media (max-width: 600px) {
-    .main-content { padding: 20px; }
-    .view-title { font-size: 1.8rem; }
-    .view-header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
-    
-    .clean-list li { font-size: 1.1rem; flex-direction: column; align-items: flex-start !important; gap: 10px; }
-    .interactive-list li { margin-left:-10px; margin-right:-10px; padding: 15px 10px; }
-    .interactive-list li:hover { padding-left: 15px; }
-}
-
-/* ========================================================= */
-/* 7. SMART TV SUPER-SCALING (QuadHD, 4K, 8K)                */
-/* ========================================================= */
-
-@media (min-width: 1920px) {
-    body { font-size: 1.2rem; }
-    .minimalist-sidebar { width: 320px; padding: 60px 40px; }
-    .clock-display { font-size: 5.5rem; }
-    .date-display { font-size: 1.3rem; }
-    .weather-mini { font-size: 1.6rem; margin-top:-10px;}
-    .weather-mini img { width: 50px; }
-    
-    .view-title { font-size: 4rem; }
-    .col-head, .minimal-lbl { font-size: 1.4rem; }
-    .event-card { padding: 15px 20px; border-left-width: 4px; }
-    .event-card .ev-title { font-size: 1.3rem; }
-    .event-card .ev-desc { font-size: 1rem; }
-    
-    .clean-list li { font-size: 1.8rem; padding: 30px 0; }
-    .grid-header, .grid-row { gap: 40px; }
-    .nav-btn { font-size: 1.3rem; padding: 20px;}
-    .nav-btn .icon { font-size: 1.8rem; width: 40px; }
-}
-
-@media (min-width: 2560px) {
-    body { font-size: 1.6rem; }
-    .minimalist-sidebar { width: 450px; gap: 60px; }
-    .clock-display { font-size: 8rem; }
-    .date-display { font-size: 1.8rem; }
-    .weather-mini { font-size: 2.5rem; margin-top:-20px;}
-    .weather-mini img { width: 70px; }
-    
-    .view-title { font-size: 6rem; }
-    .col-head, .minimal-lbl { font-size: 2rem; }
-    .event-card { padding: 20px 30px; border-left-width: 6px; }
-    .event-card .ev-title { font-size: 1.8rem; }
-    .event-card .ev-desc { font-size: 1.4rem; }
-    
-    .clean-list li { font-size: 2.5rem; padding: 40px 0; }
-    .grid-header, .grid-row { gap: 60px; }
-    .nav-btn { font-size: 1.8rem; padding: 30px;}
-    .nav-btn .icon { font-size: 2.5rem; width: 60px; }
-}
