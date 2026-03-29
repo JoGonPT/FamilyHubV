@@ -16,11 +16,39 @@ body {
     background: #1c1c1e;
     transition: background-color 2s ease;
 }
+
+/* ========================================================= */
+/* HACK DE HARDWARE: ROTAÇÃO 90º AUTOMÁTICA EM TVs DEITADAS  */
+/* ========================================================= */
+/* Se a Box TV forçar a saída de imagem na Horizontal, nós rodamos todo o HTML forçosamente 90 graus */
+@media screen and (orientation: landscape) {
+    body {
+        width: 100vh;      /* A Largura da Interface será a Altura da TV */
+        height: 100vw;     /* A Altura da Interface será a Largura da TV */
+        position: absolute;
+        top: 50vh;
+        left: 50vw;
+        /* Se a TV estiver montada invertida na parede altera aqui para: rotate(-90deg) */
+        transform: translate(-50%, -50%) rotate(90deg); 
+        transform-origin: center center;
+    }
+}
+
+/* Se abrires no Telemóvel, já está portrait, por isso funciona nativamente sem rodar. */
+@media screen and (orientation: portrait) {
+    body {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+        transform: none;
+    }
+}
+
 #background-slideshow { display: none; }
 body.night-mode { background: #000000; }
 
 .app-container { 
-    display: flex; height: 100vh; padding: 0; 
+    display: flex; height: 100%; width: 100%; padding: 0; 
     flex-direction: column; /* VERTICAL MESTRE */
 }
 
