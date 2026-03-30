@@ -2,153 +2,144 @@
     --color-joao: #4facfe;
     --color-paula: #ff85a1;
     --color-alice: #38ef7d;
-    --color-noel: #ffb74d; 
+    --color-noel: #ff9f43; 
     --text-primary: #ffffff;
-    --text-secondary: rgba(255,255,255,0.45);
+    --text-sec: rgba(255,255,255,0.45);
+    --bg-dark: #121214;
+    --glass: rgba(255,255,255,0.03);
+    --border: rgba(255,255,255,0.05);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Inter', sans-serif; font-weight: 300;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
     color: var(--text-primary);
-    overflow: hidden; 
-    background: #1c1c1e;
+    overflow: hidden;
     transition: background-color 2s ease;
 }
 
-/* ========================================================= */
-/* HACK DE HARDWARE: ROTAÇÃO 90º AUTOMÁTICA EM TVs DEITADAS  */
-/* ========================================================= */
-/* Se a Box TV forçar a saída de imagem na Horizontal, nós rodamos todo o HTML forçosamente 90 graus */
+body.night-mode { background: #000000; }
+
+/* HARDWARE ROTATION HACK - Mantem a TV perfeitamente enquadrada se rodada */
 @media screen and (orientation: landscape) {
     body {
-        width: 100vh;      /* A Largura da Interface será a Altura da TV */
-        height: 100vw;     /* A Altura da Interface será a Largura da TV */
-        position: absolute;
-        top: 50vh;
-        left: 50vw;
-        /* Se a TV estiver montada invertida na parede altera aqui para: rotate(-90deg) */
+        width: 100vh; height: 100vw;
+        position: absolute; top: 50vh; left: 50vw;
         transform: translate(-50%, -50%) rotate(90deg); 
         transform-origin: center center;
     }
 }
-
-/* Se abrires no Telemóvel, já está portrait, por isso funciona nativamente sem rodar. */
 @media screen and (orientation: portrait) {
-    body {
-        width: 100vw;
-        height: 100vh;
-        position: relative;
-        transform: none;
-    }
+    body { width: 100vw; height: 100vh; position: relative; }
 }
 
-#background-slideshow { display: none; }
-body.night-mode { background: #000000; }
+/* Base Layout */
+.app-container { display: flex; height: 100%; width: 100%; }
 
-.app-container { 
-    display: flex; height: 100%; width: 100%; padding: 0; 
-    flex-direction: column; /* VERTICAL MESTRE */
-}
-
-/* 1. TOPO DA APLICAÇÃO (Relógio + Clima) */
-.clock-display { font-size: 3.5rem; font-weight: 300; letter-spacing: -2px; margin-bottom: 5px; }
-.date-display { font-size: 1rem; font-weight: 400; color: var(--text-secondary); text-transform: capitalize; }
-.weather-mini { font-size: 1.2rem; display: flex; align-items: center; justify-content: center; opacity: 0.8; font-weight:500;}
-.weather-mini img { width: 35px; }
-
-/* 2. BARRA DE NAVEGAÇÃO EM BAIXO (Tab Bar) */
-.bottom-tab-bar {
-    position: fixed; bottom: 0; left: 0; right: 0; height: 85px;
-    background: rgba(0,0,0,0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    display: flex; justify-content: space-around; align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.05); z-index: 100;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+/* Sidebar para o D-PAD */
+.minimalist-sidebar {
+    width: 250px; background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 20px;
 }
 .nav-btn {
-    background: transparent; border: none; padding: 15px; 
-    color: var(--text-secondary); cursor: pointer; transition: 0.3s;
+    background: transparent; border: 2px solid transparent; 
+    padding: 20px; text-align: left;
+    color: var(--text-sec); font-size: 1.4rem; border-radius: 12px;
+    margin-bottom: 10px; transition: 0.2s;
 }
-.nav-btn .icon { font-size: 1.8rem; opacity: 0.4; transition: 0.3s; }
-.nav-btn.active .icon { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+.nav-btn.active { color: var(--text-primary); background: var(--glass); font-weight: 500;}
 
-/* 3. CONTEÚDO PRINCIPAL */
-.main-content.vertical-main {
-    flex: 1; padding: 20px 20px 100px 20px; /* Padding compensa a bottom bar */
-    overflow: hidden; /* Forçar proibição de scroll principal. Estica a 100% */
-    background: transparent; 
-}
-.spa-view { display: none; flex-direction: column; height: 100%; min-height: 0; animation: fadeIn 0.5s ease forwards; }
-.spa-view.active { display: flex; }
-
-/* Para que as Tarefas e as Receitas possam rolar sozinhas caso tenham muito texto, libertamos o overflow *só* dentro delas */
-#view-tasks .grid-container, #view-meals .grid-container, #view-lists .grid-container {
-    overflow-y: auto;
+/* Workspace Principal */
+.main-content {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    padding: 30px;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+.top-header { text-align: center; margin-bottom: 20px; }
+.clock-display { font-size: 5rem; font-weight: 300; letter-spacing: -2px; }
+.date-display { font-size: 1.3rem; color: var(--text-sec); text-transform: capitalize; }
+
+.bottom-footer {
+    height: 10%; margin-top: 15px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 15px;
+}
+.weather-mini { font-size: 2.2rem; display: flex; align-items: center; gap: 10px; font-weight:500;}
+
+/* Vistas Intermutáveis */
+.spa-view { display: none; flex: 1; flex-direction: column; min-height:0; }
+.spa-view.active { display: flex; animation: fadeIn 0.4s ease forwards; }
+@keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:none;} }
+.view-title { font-size: 2.5rem; margin-bottom: 25px; font-weight:300;}
+
+/* Calendário: 7 Dias sem Scroll, FDS comprimido na base */
+.grid-container { flex: 1; display: flex; flex-direction: column; min-height:0;}
+.grid-body { flex: 1; display: flex; flex-direction: column; gap:10px; }
+
+.grid-row {
+    flex: 1; display: flex; background: var(--glass); border-radius: 12px;
+    padding: 10px 15px; align-items: center; gap: 15px; border: 1px solid transparent;
 }
 
-.view-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
-.view-title { font-size: 2.2rem; font-weight: 300; letter-spacing: -1px; }
-
-.week-controls { display: flex; align-items: center; gap: 20px; justify-content:center;}
-.minimal-btn { background: rgba(255,255,255,0.05); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display:flex; align-items:center; justify-content:center; }
-.minimal-lbl { font-size: 1.1rem; font-weight: 400; color: var(--text-secondary); }
-
-/* 4. GRELHA DE CALENDÁRIO (Cálculo Matemático Dinâmico) */
-.grid-container { flex: 1; display: flex; flex-direction: column; gap: 5px; overflow: hidden; min-height: 0;}
-
-/* Voltar a ligar os Cabeçalhos de Membro, eles cabem nos 1080px */
-.grid-header { 
-    display: grid; grid-template-columns: 80px 1fr 1fr 1fr 1fr; gap: 15px; 
-    padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+/* SISTEMA FOCUS DE COMANDO MI BOX */
+.focusable { outline: none; transition: 0.2s cubic-bezier(0.1, 0.9, 0.2, 1); }
+.focusable.focused {
+    transform: scale(1.05); /* Escala */
+    border-color: var(--text-primary); /* Brilho de Borda Branco */
+    box-shadow: 0 0 25px rgba(255,255,255,0.15); /* Glow Mágico */
+    background: rgba(255,255,255,0.1);
+    z-index: 10;
 }
-.col-head { text-align: left; font-weight: 500; font-size: 1.1rem; color: var(--text-secondary); text-transform: uppercase;}
-.empty-corner { display: block; }
+.focusable.focused.card-joao { border-color: var(--color-joao); box-shadow: 0 0 25px var(--color-joao); }
+.focusable.focused.card-paula { border-color: var(--color-paula); box-shadow: 0 0 25px var(--color-paula); }
+.focusable.focused.card-alice { border-color: var(--color-alice); box-shadow: 0 0 25px var(--color-alice); }
+.focusable.focused.card-noel { border-color: var(--color-noel); box-shadow: 0 0 25px var(--color-noel); }
 
-.grid-body { 
-    flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; overflow: hidden; gap: 0;
+/* Calendário Lógica */
+.day-info { width: 60px; text-align: center; }
+.day-name { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; color: var(--text-sec); letter-spacing:1px; }
+.day-number { font-size: 1.8rem; font-weight: 300; }
+
+.day-events { flex: 1; display: flex; gap: 10px; overflow: hidden; }
+
+/* Fim de Semana - Lado a Lado para recuperar altura útil (Sáb Domingo dividem 1 fila) */
+.weekend-container { display: flex; gap: 10px; flex: 1; min-height: 0; }
+.weekend-row {
+    flex: 1; display: flex; background: var(--glass); border-radius: 12px;
+    padding: 10px; align-items: center; gap: 10px; border: 1px solid transparent;
 }
-.grid-row { 
-    flex: 1; /* Magia pura: força os 7 dias a fatiar a TV em 7 alturas perfeitamente iguais! */
-    display: grid; grid-template-columns: 80px 1fr 1fr 1fr 1fr; gap: 15px; 
-    border-bottom: 1px solid rgba(255,255,255,0.03); padding: 5px 0;
-    overflow: hidden;
-}
 
-.day-label { display: flex; flex-direction: column; justify-content: center; align-items:flex-start;}
-.day-name { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px;}
-.day-number { font-size: 1.6rem; font-weight: 300; color: var(--text-primary);}
-
-.grid-cell { 
-    display: flex; flex-direction: column; gap: 6px; padding: 4px 0;
-    overflow-y: auto; overflow-x: hidden;
-}
-.grid-cell::-webkit-scrollbar { display: none; }
-
+/* Cartões de Evento */
 .event-card {
-    background: rgba(255,255,255,0.03); border: none; border-left: 3px solid; 
-    padding: 10px 12px; border-radius: 0 8px 8px 0; 
-    display: flex; flex-direction: column; justify-content: center;
+    background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px 15px;
+    border-left: 4px solid var(--text-sec);
+    min-width: 140px; display: flex; flex-direction: column; justify-content: center;
 }
-.event-card .ev-title { font-weight: 500; font-size: 1.1rem; color: var(--text-primary); }
-.event-card .ev-desc { font-weight: 300; font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; }
+.event-card .ev-title { font-weight: 500; font-size: 1.1rem; }
+.event-card .ev-desc { font-weight: 300; font-size: 0.9rem; color: var(--text-sec); margin-top: 4px; }
 
 .card-joao { border-left-color: var(--color-joao); }
 .card-paula { border-left-color: var(--color-paula); }
 .card-alice { border-left-color: var(--color-alice); }
-.card-noel { border-left-color: var(--color-noel); }
+.card-noel { border-left-color: var(--color-noel); background: rgba(255, 159, 67, 0.15); } /* Cor do cão/noel preenche cartão */
 
-/* 5. GESTÃO DE LISTAS/REFEIÇOES */
-.clean-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-.clean-list li {
-    font-size: 1.1rem; font-weight: 300; padding: 18px; border-radius: 10px;
-    background: rgba(255,255,255,0.02); display: flex; flex-direction: column;
+.row-today { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); box-shadow: 0 0 20px rgba(255,255,255,0.02); }
+.row-today .day-name { color: var(--color-alice); /* Exmplo: Glow atual */ }
+
+/* Barra Vertical Progresso do Dia (0h-24h) */
+#vertical-progress-bar {
+    position: absolute; right: 0; top: 0; width: 4px; background: rgba(255,255,255,0.5);
+    border-radius: 2px; transition: height 60s linear; box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    z-index: 1000;
 }
-.interactive-list li { cursor: pointer; transition: 0.3s; flex-direction: row; align-items: center; justify-content: space-between;}
-.interactive-list li:active { background: rgba(255,255,255,0.08); transform: scale(0.98); }
-.interactive-list li.striked { text-decoration: line-through; opacity: 0.2; }
+
+/* Listas Genéricas */
+.clean-list { list-style: none; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding-right:10px; max-height:100%; }
+.list-item { background: var(--glass); padding: 25px; border-radius: 12px; font-size: 1.4rem; border: 2px solid transparent; font-weight: 300; }
+.clean-list::-webkit-scrollbar { width: 4px; }
+.clean-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }

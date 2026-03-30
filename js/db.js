@@ -1,110 +1,82 @@
-// ==========================================
-// Módulo IndexedDB - Múltiplos Nós e Clean-up Global
-// ==========================================
+const DB_NAME = "FamilyDashboardDB";
+const DB_VERSION = 2; // Incremental version
 
-const DB_NAME = 'FamilyHubDB';
-const DB_VERSION = 4; // Upgrading to support new multiple stores accurately
-
-// Tabelas alinhadas com os Nós do Firebase do "Admin.html"
 export const stores = {
-    CALENDAR: 'calendar',
-    TASKS: 'tasks',
-    MEALS: 'meals',
-    LISTS: 'shoppingList'
+    CALENDAR: "calendar",
+    TASKS: "tasks",
+    MEALS: "meals",
+    LISTS: "shoppingList"
 };
 
-let dbInstance = null;
+let dbInstance;
 
 export function initDB() {
     return new Promise((resolve, reject) => {
-        const req = indexedDB.open(DB_NAME, DB_VERSION);
-        
-        req.onupgradeneeded = (e) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
             const db = e.target.result;
-            
-            Object.values(stores).forEach(storeName => {
-                if (!db.objectStoreNames.contains(storeName)) {
-                    const s = db.createObjectStore(storeName, { keyPath: 'id' });
-                    // Adicionamos o indíce timestamp para permitir o cleanOldData() rápido
-                    s.createIndex('createdAt', 'createdAt', { unique: false });
-                    
-                    // Colunas que precisam de ser pesquisadas pelo app
-                    if (storeName === stores.CALENDAR) {
-                        s.createIndex('date', 'date', { unique: false });
-                    }
+            Object.values(stores).forEach(store => {
+                if (!db.objectStoreNames.contains(store)) {
+                    db.createObjectStore(store, { keyPath: "id" });
                 }
             });
         };
-        
-        req.onsuccess = (e) => {
+        request.onsuccess = (e) => {
             dbInstance = e.target.result;
             resolve(dbInstance);
         };
-        
-        req.onerror = (e) => reject(e.target.error);
+        request.onerror = (e) => {
+            reject("IndexedDB error:", e);
+        };
     });
 }
 
-// Guarda o Payload da Nuvem na Base de dados local
-export function saveAllToStore(storeName, dataObj) {
+function getStore(storeName, mode = "readonly") {
+    return dbInstance.transaction(storeName, mode).objectStore(storeName);
+}
+
+export function saveAllToStore(storeName, fbData) {
     return new Promise((resolve) => {
-        if (!dbInstance) return resolve();
-        
-        const tx = dbInstance.transaction([storeName], 'readwrite');
-        const store = tx.objectStore(storeName);
+        if(!dbInstance) return resolve();
+        const store = getStore(storeName, "readwrite");
         store.clear(); 
-        
-        if (dataObj) {
-            Object.keys(dataObj).forEach(key => {
-                const item = dataObj[key];
-                const safeItem = typeof item === 'object' ? {...item} : { value: item };
-                safeItem.id = key; 
-                store.put(safeItem);
+        if (fbData) {
+            Object.keys(fbData).forEach(key => {
+                store.add({ id: key, ...fbData[key] });
             });
         }
-        tx.oncomplete = () => resolve();
+        resolve();
     });
 }
 
-// Get global
 export function getAllFromStore(storeName) {
     return new Promise((resolve) => {
-        if (!dbInstance) return resolve([]);
-        const tx = dbInstance.transaction([storeName], 'readonly');
-        const req = tx.objectStore(storeName).getAll();
-        
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => resolve([]);
+        if(!dbInstance) return resolve([]);
+        const store = getStore(storeName);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => resolve([]);
     });
 }
 
-// Garbage Collector: Percorre todas as tabelas e limpa os itens velhos (>60d)
-export function cleanOldData() {
-    if (!dbInstance) return;
-    
-    // 60 Dias em Milisegundos
-    const limiteMs = Date.now() - (60 * 24 * 60 * 60 * 1000);
-    
-    Object.values(stores).forEach(storeName => {
-        try {
-            const tx = dbInstance.transaction([storeName], 'readwrite');
-            const store = tx.objectStore(storeName);
+// LIMPAR DADOS ANTIGOS (> 60 Dias)
+export async function cleanOldData() {
+    if(!dbInstance) return;
+    const now = new Date().getTime();
+    const SIXTY_DAYS = 60 * 24 * 60 * 60 * 1000;
+
+    Object.values(stores).forEach(async (storeName) => {
+        const items = await getAllFromStore(storeName);
+        const store = getStore(storeName, "readwrite");
+        
+        items.forEach(item => {
+            const createdAt = item.createdAt ? new Date(item.createdAt).getTime() : 0;
+            const dateRef = item.date ? new Date(item.date).getTime() : 0;
             
-            if (store.indexNames.contains('createdAt')) {
-                const index = store.index('createdAt');
-                // Pega tudo que seja MAIS VELHO que o "limiteMs"
-                const range = IDBKeyRange.upperBound(limiteMs);
-                const req = index.openCursor(range);
-                
-                req.onsuccess = (e) => {
-                    const cursor = e.target.result;
-                    if (cursor) {
-                        // Apagar da memória da Box
-                        store.delete(cursor.primaryKey);
-                        cursor.continue();
-                    }
-                };
+            const age = Math.max(createdAt, dateRef);
+            if(age > 0 && (now - age > SIXTY_DAYS)) {
+                store.delete(item.id);
             }
-        } catch(e) { console.error(`Falha a limpar rotinas de ${storeName}:`, e) }
+        });
     });
 }

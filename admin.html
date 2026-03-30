@@ -1,496 +1,142 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Family Hub Admin</title>
-    <!-- Fonte Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>📱 App Admin - Hub Vertical</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --surface: #f7f7f8;
-            --text-pri: #000000;
-            --text-sec: #8e8e93; 
-            --accent: #0a84ff; 
-            --border: #e5e5ea;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-pri);
-            font-weight: 400;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        header {
-            padding: 20px;
-            padding-top: max(20px, env(safe-area-inset-top));
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 10;
-        }
-
-        .main-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            letter-spacing: -0.5px;
-            text-align: center;
-        }
-
-        .nav-menu {
-            display: flex;
-            background: var(--surface);
-            padding: 4px;
-            border-radius: 10px;
-            gap: 2px;
-            overflow-x: auto;
-        }
-        .nav-menu::-webkit-scrollbar { display: none; }
-
-        .nav-tab {
-            flex: 1;
-            min-width: 70px; /* Reduced to fit 5 tabs on small screens */
-            padding: 10px 5px;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-sec);
-            background: transparent;
-            border: none;
-            border-radius: 7px;
-            cursor: pointer;
-            transition: 0.25s ease;
-        }
-        .nav-tab.active {
-            background: var(--bg-color);
-            color: var(--text-pri);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-        }
-
-        main {
-            flex: 1;
-            padding: 25px 20px;
-            overflow-y: auto;
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.4s ease forwards;
-        }
-        .tab-content.active { display: block; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 18px; 
-            margin-bottom: 30px;
-        }
-
-        label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-sec);
-            margin-bottom: -10px;
-            margin-left: 5px;
-        }
-
-        .clean-input, .clean-select {
-            width: 100%;
-            background: var(--surface);
-            border: 1px solid transparent; 
-            color: var(--text-pri);
-            font-family: inherit;
-            font-size: 1rem;
-            padding: 18px;
-            border-radius: 12px;
-            outline: none;
-            transition: 0.3s;
-            appearance: none; 
-        }
-        .clean-input::placeholder { color: #aaaaaa; }
-        .clean-input:focus, .clean-select:focus { 
-            background: var(--bg-color); 
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2); 
-        }
-
-        .submit-btn {
-            width: 100%;
-            font-size: 1.1rem;
-            font-weight: 600;
-            padding: 18px;
-            background: var(--accent);
-            color: #ffffff;
-            border: none;
-            border-radius: 14px; 
-            cursor: pointer;
-            margin-top: 15px;
-            transition: 0.2s;
-        }
-        .submit-btn:active { transform: scale(0.96); opacity: 0.9; }
-        .submit-btn.success { background: #34c759; }
-
-        .time-group { display: flex; gap: 10px; }
-        .time-group > div { flex: 1; display: flex; flex-direction: column; gap: 16px; }
-
+        :root { --bg: #f2f2f7; --surface: #ffffff; --accent: #007aff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #000; margin:0; padding:20px; padding-bottom: 50px;}
+        .card { background: var(--surface); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h1 { font-size: 1.6rem; text-align: center; margin-bottom: 25px; font-weight: 600; }
+        h2 { font-size: 1.1rem; color: #8e8e93; margin-top:0; margin-bottom:15px; font-weight: 500;}
+        input, select { width: 100%; padding: 15px; border: 1px solid #d1d1d6; border-radius: 10px; margin-bottom: 12px; font-size: 1rem; box-sizing: border-box; background: var(--surface); transition:0.3s;}
+        input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 5px rgba(0,122,255,0.3); }
+        button { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        button:active { opacity: 0.7; transform: scale(0.98); }
+        .member-chips { display: flex; gap: 10px; margin-bottom: 15px; }
+        .chip { flex: 1; padding: 12px; text-align: center; border-radius: 8px; border: 1px solid #d1d1d6; cursor: pointer; transition:0.2s;}
+        .chip.active { border-color: var(--accent); background: rgba(0,122,255,0.1); font-weight: 600; color: var(--accent);}
+        .noel-toggle { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff3e0; border-radius: 10px; margin-bottom: 15px;}
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;}
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;}
+        input:checked + .slider { background-color: #ff9f43; }
+        input:checked + .slider:before { transform: translateX(22px); }
     </style>
 </head>
 <body>
+    <h1>Hub Control Center</h1>
 
-    <header>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <a href="index.html" style="text-decoration: none; color: var(--text-sec); font-size: 1.5rem; padding: 5px;" title="Voltar ao Dashboard">◀</a>
-            <h1 class="main-title" style="margin-bottom: 0;">Configurar Hub</h1>
-            <div style="width: 24px;"></div> <!-- Spacer -->
+    <!-- 1. AGENDA CALENDÁRIO -->
+    <div class="card">
+        <h2>📅 Agendar Calendário</h2>
+        <input type="text" id="cal-title" placeholder="O que vai acontecer? (ex: Natação)">
+        <div style="display:flex; gap:10px;">
+            <input type="date" id="cal-date">
+            <input type="time" id="cal-time">
         </div>
-        <div class="nav-menu">
-            <button class="nav-tab active" data-target="sec-calendar">Agendar</button>
-            <button class="nav-tab" data-target="sec-tasks">Tarefas</button>
-            <button class="nav-tab" data-target="sec-meals">Prato</button>
-            <button class="nav-tab" data-target="sec-lists">Lista</button>
-            <!-- NOVA ABA DE GESTÃO -->
-            <button class="nav-tab" data-target="sec-manage">Gerir</button>
+        <div class="member-chips">
+            <div class="chip active" onclick="selMember('joao', this)">João</div>
+            <div class="chip" onclick="selMember('paula', this)">Paula</div>
+            <div class="chip" onclick="selMember('alice', this)">Alice</div>
         </div>
-    </header>
-
-    <main>
-        <!-- 1. CALENDÁRIO -->
-        <div id="sec-calendar" class="tab-content active">
-            <div class="form-group">
-                <label>Título do Evento</label>
-                <input type="text" id="cal-title" class="clean-input" placeholder="Ex: Aniversário, Consulta..." autocomplete="off">
-                
-                <div class="time-group">
-                    <div style="gap:0">
-                        <label style="margin-bottom: 6px;">Data</label>
-                        <input type="date" id="cal-date" class="clean-input">
-                    </div>
-                    <div style="gap:0">
-                        <label style="margin-bottom: 6px;">Hora</label>
-                        <input type="time" id="cal-time" class="clean-input">
-                    </div>
-                </div>
-
-                <label>Membro Central</label>
-                <select id="cal-member" class="clean-select">
-                    <option value="joao">João</option>
-                    <option value="paula">Paula</option>
-                    <option value="alice">Alice</option>
-                    <option value="noel">🐶 Noel</option>
-                </select>
-
-                <button id="btn-cal" class="submit-btn" onclick="submitCalendar()">Enviar Evento</button>
-            </div>
+        <div class="noel-toggle">
+            <span style="font-weight: 500; color:#d35400;">Envolve o cão Noel? 🐾</span>
+            <label class="switch">
+                <input type="checkbox" id="cal-noel">
+                <span class="slider"></span>
+            </label>
         </div>
+        <button onclick="sendCal()">Guardar na Agenda</button>
+    </div>
 
-        <!-- 2. TAREFAS -->
-        <div id="sec-tasks" class="tab-content">
-            <div class="form-group">
-                <label>Título da Tarefa</label>
-                <input type="text" id="task-title" class="clean-input" placeholder="Ex: Pagar a conta da água..." autocomplete="off">
-                
-                <label>Nível de Urgência</label>
-                <select id="task-urgency" class="clean-select">
-                    <option value="normal">🟢 Urgência Normal</option>
-                    <option value="alta">🔴 Urgência Máxima</option>
-                </select>
-
-                <button id="btn-task" class="submit-btn" onclick="submitTask()">Adicionar Tarefa</button>
-            </div>
+    <!-- 2. TAREFAS RÁPIDAS / LISTAS -->
+    <div class="card">
+        <h2>✅ Criar Tarefa ou Lista</h2>
+        <input type="text" id="tk-title" placeholder="Nome da tarefa ou compra...">
+        <div style="display:flex; gap:10px;">
+            <button onclick="sendGenerics('hub/tasks')">✔️ Nova Tarefa</button>
+            <button onclick="sendGenerics('hub/shoppingList')" style="background:#34c759;">🛒 Comprar</button>
         </div>
+    </div>
 
-        <!-- 3. REFEIÇÕES -->
-        <div id="sec-meals" class="tab-content">
-            <div class="form-group">
-                <label>Dia da Semana Planeado</label>
-                <select id="meal-day" class="clean-select">
-                    <option value="Segunda">Segunda-feira</option>
-                    <option value="Terça">Terça-feira</option>
-                    <option value="Quarta">Quarta-feira</option>
-                    <option value="Quinta">Quinta-feira</option>
-                    <option value="Sexta">Sexta-feira</option>
-                    <option value="Sábado">Sábado</option>
-                    <option value="Domingo">Domingo</option>
-                </select>
+    <!-- 3. REFEIÇÕES -->
+    <div class="card">
+        <h2>🍽️ Planear Refeição</h2>
+        <input type="text" id="meal-name" placeholder="Prato Principal (ex: Lasanha)">
+        <input type="text" id="meal-type" placeholder="Tipo (Almoço, Jantar...)">
+        <button onclick="sendMeal()" style="background:#ff3b30;">Adicionar Refeição</button>
+    </div>
 
-                <label>Período</label>
-                <select id="meal-type" class="clean-select">
-                    <option value="Almoço">☀️ Almoço</option>
-                    <option value="Jantar">🌙 Jantar</option>
-                </select>
-
-                <label>Nome do Prato (Principal)</label>
-                <input type="text" id="meal-name" class="clean-input" placeholder="Ex: Frango Rústico Azeitonas">
-
-                <label>Anotações, Receita ou Dicas</label>
-                <textarea id="meal-notes" class="clean-input" placeholder="Cole aqui a receita, ingredientes, ou dicas de preparação..." style="resize:vertical; min-height:100px; line-height:1.5;"></textarea>
-
-                <button id="btn-meal" class="submit-btn" onclick="submitMeal()">Marcar Refeição</button>
-            </div>
-        </div>
-
-        <!-- 4. LISTAS DE COMPRAS -->
-        <div id="sec-lists" class="tab-content">
-            <div class="form-group">
-                <label>Partilhar com o Dashboard Familiar</label>
-                <input type="text" id="list-item" class="clean-input" placeholder="Ex: Ovo, Farinha, Sumos...">
-
-                <button id="btn-list" class="submit-btn" onclick="submitList()">Adicionar Item</button>
-            </div>
-        </div>
-
-        <!-- 5. GERIR REGISTOS ANTIGOS (NOVO) -->
-        <div id="sec-manage" class="tab-content">
-            <div class="form-group">
-                <label>Escolher Categoria Desejada</label>
-                <select id="manage-category" class="clean-select" style="margin-bottom: 10px;">
-                    <option value="hub/calendar">📅 Gestão do Calendário</option>
-                    <option value="hub/tasks">✅ Gestão das Tarefas</option>
-                    <option value="hub/meals">🍽️ Gestão das Refeições</option>
-                    <option value="hub/shoppingList">🛒 Gestão da Lista de Compras</option>
-                </select>
-                
-                <div id="manage-list" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
-                    <!-- Injetado por JS (Edit / Delete) -->
-                    <div style="opacity:0.5; text-align:center; padding:20px;">Selecione para ver registos.</div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- FIREBASE SDK v9+ CDN -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        // Edit/Remove requires update and remove alongside onValue wrapper (onValue imported separately to allow binding)
-        import { getDatabase, ref, push, serverTimestamp, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // Variável Mestre FirebaseConfig pronta
-        const firebaseConfig = {
+        // MESH COM O SEU PROJETO FIREBASE VIAZ
+        const app = initializeApp({
             apiKey: "AIzaSyDFwECdwELB_wPHR_9rkkY9MRcNBjQSUks",
             authDomain: "viaz-1e406.firebaseapp.com",
             databaseURL: "https://viaz-1e406-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "viaz-1e406",
-            storageBucket: "viaz-1e406.firebasestorage.app",
-            messagingSenderId: "73407200033",
-            appId: "1:73407200033:web:ba4a55ff672252e2645c60"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        // --- SISTEMA DE NAVEGAÇÃO SPA NO TELEMÓVEL --- //
-        const tabs = document.querySelectorAll('.nav-tab');
-        const contents = document.querySelectorAll('.tab-content');
-        
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const target = tab.getAttribute('data-target');
-
-                tabs.forEach(t => t.classList.remove('active'));
-                contents.forEach(c => c.classList.remove('active'));
-                
-                tab.classList.add('active');
-                document.getElementById(target).classList.add('active');
-
-                // Trigger imediato do Listador de Registos se entrar na Aba GERIR
-                if (target === 'sec-manage') {
-                    loadManageRecords();
-                }
-            });
+            storageBucket: "viaz-1e406.firebasestorage.app"
         });
+        const db = getDatabase(app);
 
-        // Configuração Inicial de Datas
-        document.getElementById('cal-date').value = new Date().toISOString().split('T')[0];
-
-        // --- LÓGICAS INTELIGENTES DE ENVIO C/ CONFORTO VISUAL --- //
-        const showSuccessLight = (btn, originalText) => {
-            btn.classList.add('success');
-            btn.textContent = '✓ Guardado!';
-            setTimeout(() => {
-                btn.classList.remove('success');
-                btn.textContent = originalText;
-            }, 1800);
+        // UI Lógica
+        let curMember = 'joao';
+        window.selMember = (m, el) => {
+            curMember = m;
+            document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+            el.classList.add('active');
         };
 
-        // 1. Enviar HUB/CALENDAR
-        window.submitCalendar = async () => {
-            const title = document.getElementById('cal-title').value.trim();
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('cal-date').value = today;
+
+        // Firebase Submits
+        window.sendCal = async () => {
+            const title = document.getElementById('cal-title').value;
             const date = document.getElementById('cal-date').value;
             const time = document.getElementById('cal-time').value;
-            const member = document.getElementById('cal-member').value;
+            const isNoel = document.getElementById('cal-noel').checked;
             
-            if(!title || !date) return alert("Preecha o título e a data do evento!");
-
-            const payload = { title, date, time, member, createdAt: serverTimestamp() };
-
-            const btn = document.getElementById('btn-cal');
-            try {
-                btn.textContent = 'A processar...';
-                await push(ref(database, 'hub/calendar'), payload);
-                document.getElementById('cal-title').value = '';
-                showSuccessLight(btn, 'Enviar Evento');
-            } catch(e) { btn.textContent = 'Enviar Evento'; }
-        };
-
-        // 2. Enviar HUB/TASKS
-        window.submitTask = async () => {
-            const title = document.getElementById('task-title').value.trim();
-            const urgency = document.getElementById('task-urgency').value;
+            if(!title || !date) return alert('Preecha pelo menos titulo e data!');
+            const btn = event.target; btn.innerText = "A Enviar...";
             
-            if(!title) return alert("Descreva a tarefa em causa!");
-
-            const payload = { title, urgency, createdAt: serverTimestamp() };
-
-            const btn = document.getElementById('btn-task');
-            try {
-                btn.textContent = 'A processar...';
-                await push(ref(database, 'hub/tasks'), payload);
-                document.getElementById('task-title').value = '';
-                showSuccessLight(btn, 'Adicionar Tarefa');
-            } catch(e) { btn.textContent = 'Adicionar Tarefa'; }
-        };
-
-        // 3. Enviar HUB/MEALS
-        window.submitMeal = async () => {
-            const day = document.getElementById('meal-day').value;
-            const type = document.getElementById('meal-type').value;
-            const name = document.getElementById('meal-name').value.trim();
-            const notes = document.getElementById('meal-notes').value.trim();
-            
-            if(!name) return alert("Insira o nome do prato principal!");
-
-            const payload = { day, type, name, notes, createdAt: serverTimestamp() };
-
-            const btn = document.getElementById('btn-meal');
-            try {
-                btn.textContent = 'A processar...';
-                await push(ref(database, 'hub/meals'), payload);
-                document.getElementById('meal-name').value = '';
-                document.getElementById('meal-notes').value = '';
-                showSuccessLight(btn, 'Marcar Refeição');
-            } catch(e) { btn.textContent = 'Marcar Refeição'; }
-        };
-
-        // 4. Enviar HUB/SHOPPINGLIST
-        window.submitList = async () => {
-            const text = document.getElementById('list-item').value.trim();
-            if(!text) return;
-
-            const payload = { text, createdAt: serverTimestamp() };
-
-            const btn = document.getElementById('btn-list');
-            try {
-                btn.textContent = 'A processar...';
-                await push(ref(database, 'hub/shoppingList'), payload);
-                document.getElementById('list-item').value = '';
-                showSuccessLight(btn, 'Adicionar Item');
-            } catch(e) { btn.textContent = 'Adicionar Item'; }
-        };
-
-
-        // ========================================================
-        // ENGINE DE EDIÇÃO E DELEÇÃO (GERIR REGISTOS)
-        // ========================================================
-        let currentManageCategory = "hub/calendar";
-
-        document.getElementById('manage-category').addEventListener('change', (e) => {
-            currentManageCategory = e.target.value;
-            loadManageRecords();
-        });
-
-        // Guardamos a referência do listener para evitar clones ao mudar abas
-        let activeManageListener = null;
-
-        function loadManageRecords() {
-            const listEl = document.getElementById('manage-list');
-            listEl.innerHTML = '<div style="opacity:0.5; text-align:center; padding:20px;">A Carregar Registos em Tempo Real...</div>';
-
-            const dbRef = ref(database, currentManageCategory);
-
-            // Ouvinte dinâmico - mantém os botões sempre reativos sem reload manual
-            onValue(dbRef, (snap) => {
-                listEl.innerHTML = '';
-                const data = snap.val();
-                
-                if (!data) {
-                    listEl.innerHTML = '<div style="text-align:center; opacity:0.5; padding:20px; font-weight:500;">Nenhum registo encontrado nesta secção! Limpo! ✨</div>';
-                    return;
-                }
-
-                // Criação de Cards Listagem em Ordem Inversa (Recentes primeiro)
-                const entries = Object.entries(data).reverse();
-
-                entries.forEach(([id, item]) => {
-                    // Detetores flexíveis (Suporta Campos de todas as coleções)
-                    let primaryText = item.title || item.name || item.text || "Sem Título";
-                    let subText = item.date || item.day || item.urgency || "Sem Metadados";
-
-                    const card = document.createElement('div');
-                    card.style.background = 'var(--bg-color)';
-                    card.style.border = '1px solid var(--border)';
-                    card.style.padding = '15px';
-                    card.style.borderRadius = '12px';
-                    card.style.display = 'flex';
-                    card.style.justifyContent = 'space-between';
-                    card.style.alignItems = 'center';
-                    card.style.gap = '10px';
-                    card.style.boxShadow = '0 2px 5px rgba(0,0,0,0.02)';
-
-                    card.innerHTML = `
-                        <div style="flex:1; overflow:hidden;">
-                            <div style="font-weight:600; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color: var(--text-pri);">${primaryText}</div>
-                            <div style="font-size:0.8rem; color:var(--text-sec); margin-top:4px;">${subText}</div>
-                        </div>
-                        <div style="display:flex; gap:8px;">
-                            <button class="edit-btn" style="background:var(--surface); border:none; padding:12px; border-radius:8px; font-size:1.1rem; cursor:pointer;" title="Mudar Texto">✏️</button>
-                            <button class="del-btn" style="background:#ff3b3011; border:none; padding:12px; border-radius:8px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center;" title="Apagar O Registo">
-                                <span style="font-size: 1.2rem; filter: saturate(1.5);">🗑️</span>
-                            </button>
-                        </div>
-                    `;
-
-                    // [ACÃO] Apagar Registo Instantaneamente
-                    card.querySelector('.del-btn').addEventListener('click', async () => {
-                        const wantsDel = confirm(`Eliminar permanentemente:\n"${primaryText}"?`);
-                        if(wantsDel) {
-                            await remove(ref(database, `${currentManageCategory}/${id}`));
-                        }
-                    });
-
-                    // [AÇÃO] Editar Principal Text
-                    card.querySelector('.edit-btn').addEventListener('click', async () => {
-                        let newText = prompt(`Edição Rápida da Descrição/Título:\nModifica "${primaryText}" abaixo:`, primaryText);
-                        
-                        if (newText && newText !== primaryText) {
-                            let updates = {};
-                            // Injeta no campo universal correto do Objeto
-                            if(item.title !== undefined) updates.title = newText;
-                            else if(item.name !== undefined) updates.name = newText;
-                            else if(item.text !== undefined) updates.text = newText;
-                            
-                            await update(ref(database, `${currentManageCategory}/${id}`), updates);
-                        }
-                    });
-
-                    listEl.appendChild(card);
-                });
+            await push(ref(db, 'hub/calendar'), { 
+                title, date, time, member: curMember, isNoel, createdAt: new Date().toISOString() 
             });
-        }
+            document.getElementById('cal-title').value = '';
+            document.getElementById('cal-noel').checked = false;
+            btn.innerText = "Guardar na Agenda";
+            alert('Evento Guardado!');
+        };
+
+        window.sendGenerics = async (node) => {
+            const title = document.getElementById('tk-title').value;
+            if(!title) return alert('Escreve o nome primeiro!');
+            
+            const btn = event.target; const backup = btn.innerText; btn.innerText = "A Enviar...";
+            await push(ref(db, node), { title: title, text: title, createdAt: new Date().toISOString() });
+            
+            document.getElementById('tk-title').value = '';
+            btn.innerText = backup;
+        };
+
+        window.sendMeal = async () => {
+            const name = document.getElementById('meal-name').value;
+            const type = document.getElementById('meal-type').value;
+            if(!name) return alert('Preenche o prato.');
+            
+            const btn = event.target; btn.innerText = "A Enviar...";
+            await push(ref(db, 'hub/meals'), { name, type, createdAt: new Date().toISOString() });
+            
+            document.getElementById('meal-name').value = '';
+            btn.innerText = "Adicionar Refeição";
+        };
     </script>
 </body>
 </html>
