@@ -96,32 +96,52 @@ window.addEventListener('keydown', async (e) => {
     if(action === 'ENTER') {
         const el = focusables[currentIndex];
         if(!el) return;
+        executeFocusableAction(el);
+    }
+});
 
-        if(el.classList.contains('nav-btn')) {
-             document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-             document.querySelectorAll('.spa-view').forEach(v=>v.classList.remove('active'));
-             el.classList.add('active');
-             document.getElementById(el.getAttribute('data-target')).classList.add('active');
-             refreshFocusableElements();
-        } 
-        else if(el.hasAttribute('data-action')) {
-             const act = el.getAttribute('data-action');
-             const id = el.getAttribute('data-id');
-             if(!id) return;
+function executeFocusableAction(el) {
+    if(el.classList.contains('nav-btn')) {
+         document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+         document.querySelectorAll('.spa-view').forEach(v=>v.classList.remove('active'));
+         el.classList.add('active');
+         document.getElementById(el.getAttribute('data-target')).classList.add('active');
+         refreshFocusableElements();
+    } 
+    else if(el.hasAttribute('data-action')) {
+         const act = el.getAttribute('data-action');
+         const id = el.getAttribute('data-id');
+         if(!id) return;
 
-             el.style.transform = 'scale(0.9)'; // Anima Click
-             setTimeout(async () => {
-                 let nodeMap = {
-                     'delete-task': 'hub/tasks',
-                     'delete-meal': 'hub/meals',
-                     'delete-list': 'hub/shoppingList',
-                     'delete-event': 'hub/calendar'
-                 };
-                 if(nodeMap[act]) {
-                     try { await remove(ref(database, `${nodeMap[act]}/${id}`)); } catch(e){}
-                 }
-             }, 300);
+         el.style.transform = 'scale(0.9)'; // Anima Click
+         setTimeout(async () => {
+             let nodeMap = {
+                 'delete-task': 'hub/tasks',
+                 'delete-meal': 'hub/meals',
+                 'delete-list': 'hub/shoppingList',
+                 'delete-event': 'hub/calendar'
+             };
+             if(nodeMap[act]) {
+                 try { await remove(ref(database, `${nodeMap[act]}/${id}`)); } catch(e){}
+             }
+         }, 300);
+    }
+}
+
+// ============================================
+// HÍBRIDO: SUPORTE A TOUCH & MOUSE (PC/Movel)
+// ============================================
+document.addEventListener('click', (e) => {
+    const clickedItem = e.target.closest('.focusable');
+    if(clickedItem) {
+        // Atualiza a Auréola do Comando para o componente tocado com o dedo, mantendo a coesão de input
+        const index = focusables.indexOf(clickedItem);
+        if(index !== -1) {
+            focusables[currentIndex]?.classList.remove('focused');
+            currentIndex = index;
+            clickedItem.classList.add('focused');
         }
+        executeFocusableAction(clickedItem);
     }
 });
 
