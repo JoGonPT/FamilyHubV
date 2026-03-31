@@ -38,10 +38,24 @@ setInterval(updateClock, 10000); updateClock(); // Começa logo
 // ============================================
 let focusables = [];
 let currentIndex = 0;
+let pendingDeleteAction = null; 
 
 function refreshFocusableElements() {
-    focusables = Array.from(document.querySelectorAll('.focusable:not([style*="display: none"])'));
-    if(focusables.length > 0 && !document.querySelector('.focused')) {
+    const modal = document.getElementById('confirm-modal');
+    const isModalVisible = modal && modal.style.display !== 'none';
+    
+    if (isModalVisible) {
+        // Se o modal estiver aberto, o comando SÓ pode focar nos botões dele!
+        focusables = Array.from(modal.querySelectorAll('.focusable'));
+    } else {
+        // Senao, foca no layout normal (Sidebar e Main)
+        focusables = Array.from(document.querySelectorAll('.app-container .focusable:not([style*="display: none"])'));
+    }
+
+    if(focusables.length > 0) {
+        // Garantir que temos um foco válido
+        if (currentIndex >= focusables.length) currentIndex = 0;
+        document.querySelector('.focused')?.classList.remove('focused');
         focusables[currentIndex]?.classList.add('focused');
     }
 }
@@ -113,20 +127,48 @@ function executeFocusableAction(el) {
          const id = el.getAttribute('data-id');
          if(!id) return;
 
-         el.style.transform = 'scale(0.9)'; // Anima Click
-         setTimeout(async () => {
-             let nodeMap = {
-                 'delete-task': 'hub/tasks',
-                 'delete-meal': 'hub/meals',
-                 'delete-list': 'hub/shoppingList',
-                 'delete-event': 'hub/calendar'
-             };
-             if(nodeMap[act]) {
-                 try { await remove(ref(database, `${nodeMap[act]}/${id}`)); } catch(e){}
-             }
-         }, 300);
+         // INTERCEPTOR: Mostrar Confirmação antes de apagar
+         pendingDeleteAction = { act, id, el };
+         showConfirmModal(`Deseja apagar este registo?`);
     }
 }
+
+function showConfirmModal(msg) {
+    document.getElementById('confirm-msg').innerText = msg;
+    document.getElementById('confirm-modal').style.display = 'flex';
+    currentIndex = 0; // Focar no "Sim" por defeito
+    refreshFocusableElements();
+}
+
+function hideConfirmModal() {
+    document.getElementById('confirm-modal').style.display = 'none';
+    pendingDeleteAction = null;
+    currentIndex = 0;
+    refreshFocusableElements();
+}
+
+// Listeners dos Botões do Modal
+document.getElementById('confirm-yes')?.addEventListener('click', async () => {
+    if(!pendingDeleteAction) return;
+    const { act, id, el } = pendingDeleteAction;
+    
+    el.style.transform = 'scale(0.9)'; // Anima Click
+    let nodeMap = {
+        'delete-task': 'hub/tasks',
+        'delete-meal': 'hub/meals',
+        'delete-list': 'hub/shoppingList',
+        'delete-event': 'hub/calendar'
+    };
+    
+    if(nodeMap[act]) {
+        try { await remove(ref(database, `${nodeMap[act]}/${id}`)); } catch(e){}
+    }
+    hideConfirmModal();
+});
+
+document.getElementById('confirm-no')?.addEventListener('click', () => {
+    hideConfirmModal();
+});
 
 // ============================================
 // HÍBRIDO: SUPORTE A TOUCH & MOUSE (PC/Movel)
